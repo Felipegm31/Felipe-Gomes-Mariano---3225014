@@ -49,12 +49,17 @@ O objetivo deste projeto é projetar e implementar o núcleo de um sistema unive
 ## Instruções de Entrega
 
 1. Faça um **Fork** deste repositório para a sua conta GitHub.
-2. Organize seus arquivos conforme a estrutura:
-    - **`/docs`**: Contendo a imagem do **DER**.
-    - **`/docs/respostas.md`**: Respostas teóricas (Itens 1 e 5) e Modelo Lógico.
-    - **`/scripts`**: Arquivo **`.sql`** único contendo todo o código (DDL, DCL, Inserts e as queries DML).
-3. Realize o **push** para o seu fork e envie o link do seu repositório através da plataforma oficial.
-
+1. **Método:** Faça um **Fork** deste repositório para sua conta GitHub.
+2. **Organização de Pastas:**
+   * **`/docs`**: Contendo a imagem do **DER** e o arquivo **`respostas.md`** (respostas teóricas (Itens 1 e 5) + Modelo Lógico).
+   * **`/scripts`**: Arquivo **`.sql`** único contendo todo o código (DDL, DCL, Inserts e Queries).
+3. **Finalização:** Abra um **Pull Request (PR)** do seu fork para o repositório original.
+4. **Identificação Obrigatória:** O título do Pull Request **deve** seguir o padrão:
+   > **Nome Completo - [Seu RA]**
+5. **Link Forms:** Envie o link da sua Pull Request no link: https://forms.gle/MapD3gBWkSrgPiaL9
+6. **Horário Limite:** A entrega (Push e Pull Request) deve ocorrer até o horário estipulado pelo professor.
+7. **Penalidade Máxima:** Entregas ou modificações após o horário resultarão em **nota ZERO (0,0)**. O timestamp do GitHub é a única referência válida.
+8. **Execução:** O script SQL será executado pelo professor. Se o script de `INSERT` falhar ou as tabelas estiverem vazias, a prova não será avaliada.
 ---
 
 **Penalidades:** 
