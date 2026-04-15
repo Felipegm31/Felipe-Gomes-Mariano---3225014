@@ -1,56 +1,84 @@
-# 🎓 Projeto Prático: Sistema de Gestão Acadêmica "SigaEdu"
+# Prova Prática: Sistema de Gestão Acadêmica "SigaEdu"
+
 Este desafio simula um cenário real onde você deverá transformar dados brutos e desorganizados em um sistema de gestão acadêmica profissional, seguro e escalável.
 
-## 🎯 O Desafio
-O objetivo deste projeto é projetar e implementar o núcleo de um sistema universitário. Você partirá de uma lista de dados brutos (planilha legada) e deverá chegar a um banco de dados relacional totalmente normalizado e funcional.
+## O Desafio
+O objetivo deste projeto é projetar e implementar o núcleo de um sistema universitário. Você partirá de uma lista de dados brutos (planilha legada) e deverá chegar a um banco de dados relacional totalmente normalizado, organizado em esquemas e funcional.
 
 ---
 
-## 📂 Estrutura do Projeto
+## Estrutura do Trabalho
 
 ### 1. Modelagem e Arquitetura (Teoria)
-**Tarefa:** Responda às questões de planejamento estratégico do sistema:
-* **SGBD:** Justifique a escolha de um SGBD Relacional (ex: PostgreSQL ou MySQL) para gerenciar notas e frequências em vez de um modelo NoSQL orientado a Documentos.
+**Tarefa:** No arquivo `/docs/respostas.md`, responda às seguintes questões:
+* **SGBD:** Justifique a escolha de um SGBD Relacional (ex: PostgreSQL) em vez de um modelo NoSQL para este cenário, focando em propriedades **ACID** e integridade de dados.
+* **Organização:** Por que em um ambiente profissional de Engenharia de Dados é recomendado o uso de **Schemas** (ex: `academico`, `seguranca`) em vez de criar todas as tabelas no esquema padrão `public`?
 
-### 2. Projeto e Normalização (O Coração do Trabalho)
-**Tarefa:** Você recebeu a tabela denormalizada abaixo, extraída de uma planilha antiga. Aplique as regras de **1NF, 2NF e 3NF**:
+### 2. Projeto e Normalização
+**Tarefa:** Aplique as regras de **1NF, 2NF e 3NF** sobre a tabela denormalizada abaixo.
 
-`PLANILHA_GERAL(RA_Aluno, Nome_Aluno, Email_Aluno, Cod_Disciplina, Nome_Disciplina, Carga_Horaria, ID_Professor, Nome_Professor, Data_Matricula, Nota_Final, Semestre_Ano)`
-
-> **⚠️ Ponto de Atenção:** Identifique corretamente a dependência da `Nota_Final`. Ela depende apenas do aluno? Apenas da disciplina? Ou da combinação de ambos?
+`PLANILHA_LEGADA(ID_Matricula, Nome_Usuario, Email_Usuario, Endereco_Usuario, Cod_Servico_Academico, Nome_Disciplina, Carga_H, Matricula_Operador_Pedagogico, Nome_Docente, Data_Ingresso, Score_Final, Ciclo_Calendario)`
 
 **Entrega desta fase:**
-- Imagem do **DER (Diagrama Entidade-Relacionamento)**.
-- Esquema do **Modelo Lógico** após a normalização.
+- Imagem do **DER (Diagrama Entidade-Relacionamento)** na pasta `/docs`.
+- Esquema do **Modelo Lógico** detalhado no arquivo `/docs/respostas.md`.
 
-### 3. Implementação SQL (DDL e DCL)
-**Tarefa:** Desenvolva o script SQL de criação do ambiente:
-* **Estrutura:** Criar as tabelas normalizadas definindo **Primary Keys (PK)** e **Foreign Keys (FK)**.
-* **Integridade:** Configurar a integridade referencial (ex: impedir a exclusão de um aluno que possua registros de notas ativos).
-* **Segurança (DCL):** - Criar o perfil `professor_role`: permissão de `UPDATE` apenas na tabela de notas.
-    - Criar o perfil `coordenador_role`: acesso total ao banco.
+### 3. Implementação SQL (DDL, DCL e DML)
+**Tarefa:** Desenvolva o script SQL criando o ambiente completo:
+* **Namespaces:** Crie os schemas `academico` e `seguranca`.
+* **Estrutura (DDL):** Crie as tabelas dentro dos schemas adequados, definindo **Primary Keys (PK)** e **Foreign Keys (FK)**. 
+* **Governança (Soft Delete):** Implemente uma lógica que impeça a perda de histórico. Em vez de permitir o `DELETE` físico de um registro, garanta que o sistema suporte uma marcação de status (ex: coluna `ativo` ou `situacao`) para desativar registros sem romper a integridade referencial.
+* **Segurança (DCL):** - Criar o perfil `professor_role`: permissão de `UPDATE` apenas na coluna de notas da tabela correspondente.
+    - Criar o perfil `coordenador_role`: acesso total aos schemas criados.
+    - **Privacidade:** Garanta que o `professor_role` não tenha acesso à coluna de e-mail dos usuários.
+* **População de Dados (DML):** Insira dados suficientes para que todas as queries do Item 4 retornem resultados (mínimo de 5 alunos, 3 disciplinas e 3 professores).
 
 ### 4. Consultas e Relatórios (DML)
-**Tarefa:** Escreva as queries para atender às demandas da secretaria:
-1. **Listagem de Matriculados:** Nome de todos os alunos e suas respectivas disciplinas no semestre `2026/1` (**INNER JOIN**).
-2. **Desempenho Acadêmico:** Média de notas por disciplina, filtrando apenas aquelas com média inferior a `6.0` (**Agregação & HAVING**).
-3. **Alocação de Docentes:** Todos os professores e suas disciplinas (incluindo aqueles sem turmas vinculadas) (**LEFT JOIN**).
-4. **Destaque Acadêmico:** Nome do aluno com a maior nota na disciplina de "Banco de Dados" (**Subconsulta**).
+**Tarefa:** Escreva queries SQL para atender às seguintes demandas:
+1. **Listagem de Matriculados:** Nome dos alunos, nomes das disciplinas e ciclo, filtrando apenas pelo ciclo `2026/1`.
+2. **Baixo Desempenho:** Média de notas por disciplina, listando apenas aquelas cuja média geral seja inferior a `6.0` (**Agregação e HAVING**).
+3. **Alocação de Docentes:** Liste todos os docentes e suas respectivas disciplinas, garantindo que docentes que ainda não possuem turmas vinculadas também apareçam no relatório (**LEFT JOIN**).
+4. **Destaque Acadêmico:** Nome do aluno e o valor da nota do maior desempenho registrado na disciplina de "Banco de Dados" (**Uso de Subconsulta**).
 
-### 5. Transações e Segurança
-**Tarefa:** Analise o seguinte cenário de concorrência:
-* *Dois funcionários da secretaria tentam alterar a nota do mesmo aluno simultaneamente.*
-* **Pergunta:** Como os conceitos de **Transações (ACID)** e o **Controle de Concorrência** do SGBD garantem que o dado final não seja corrompido?
+### 5. Transações e Concorrência
+**Tarefa:** No arquivo `/docs/respostas.md`, analise o seguinte cenário: *Dois operadores da secretaria tentam alterar a nota do mesmo ID_Matricula exatamente ao mesmo tempo.*
+* Explique como os conceitos de **Isolamento (ACID)** e o uso de **Locks** (bloqueios) pelo SGBD garantem que o dado final seja consistente e não corrompido.
+
+---
+
+## Instruções de Entrega
+
+1. Faça um **Fork** deste repositório para a sua conta GitHub.
+2. Organize seus arquivos conforme a estrutura:
+    - **`/docs`**: Contendo a imagem do **DER**.
+    - **`/docs/respostas.md`**: Respostas teóricas (Itens 1 e 5) e Modelo Lógico.
+    - **`/scripts`**: Arquivo **`.sql`** único contendo todo o código (DDL, DCL, Inserts e as queries DML).
+3. Realize o **push** para o seu fork e envie o link do seu repositório através da plataforma oficial.
 
 ---
 
-## 📤 Estrutura de Entrega Esperada
-
-Para a entrega oficial, organize seu repositório no GitHub com:
-
-1. **`/docs`**: Contendo a imagem do **DER** e a justificativa das decisões de normalização.
-2. **`/scripts`**: Arquivo `.sql` contendo todo o código (DDL, DCL e as consultas DML).
-3. **`README.md`**: Documentação principal explicando como rodar o projeto e as respostas das questões teóricas.
+**Penalidades:** 
+* Código SQL com erros de sintaxe: até -2.0 pontos.
+* Repositório desorganizado ou fora da estrutura solicitada: -0.5 ponto.
 
 ---
-*Este projeto é parte integrante da avaliação da disciplina de Banco de Dados.*
+
+## ⚠️ Regras Cruciais de Entrega
+
+* **Horário Limite:** A entrega deve ser realizada via `push` para o seu repositório remoto até o horário estipulado pelo professor.
+* **Data de Modificação:** O GitHub registra o horário exato de cada `commit` e `push`. 
+* **Penalidade Máxima:** Entregas ou modificações no repositório realizadas **após o horário estipulado resultarão em nota ZERO (0,0)**, sem exceções. 
+* **Execução:** O script SQL será executado por mim. Se o script de `INSERT` falhar ou as tabelas estiverem vazias, a prova não será avaliada.
+
+---
+
+## Critérios de Avaliação (Total: 10 Pontos)
+
+| Item | Critério | Pontuação |
+| :--- | :--- | :--- |
+| **Arquitetura** | Justificativa técnica coerente sobre SGBD e Schemas. | 1.0 |
+| **Modelagem** | Aplicação correta das FN (1NF, 2NF, 3NF) e qualidade do DER. | 3.0 |
+| **Scripts DDL/DML** | Criação de tabelas, PK/FK, Soft Delete e população de dados. | 1.5 |
+| **Segurança** | Implementação de Roles e restrição de privacidade por coluna (DCL). | 1.0 |
+| **Consultas** | Precisão técnica nas 4 queries DML (Joins, Agregações, Subqueries). | 2.5 |
+| **Teoria** | Explicação correta sobre Concorrência e propriedades ACID. | 1.0 |
